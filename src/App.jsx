@@ -71,7 +71,35 @@ export default function App() {
   const selectedServiceObjs = SERVICES.filter(s => selectedServices.includes(s.id));
   const suggestedTotal = selectedServiceObjs.reduce((sum, s) => sum + s.suggested, 0);
 
-  const handleSubmit = () => setSubmitted(true);
+  const handleSubmit = async () => {
+  try {
+    const response = await fetch("https://formspree.io/f/mdavzaoj", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        practiceName,
+        budget,
+        notes,
+        package: selectedPackage,
+        services: selectedServiceObjs.map(s => s.name),
+        availability,
+      }),
+    });
+
+    if (response.ok) {
+      setSubmitted(true);
+    } else {
+      alert("Something went wrong. Please try again.");
+    }
+  } catch (error) {
+    alert("Unable to send form. Please check your connection.");
+  }
+};
 
   if (submitted) {
     return (
