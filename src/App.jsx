@@ -1,4 +1,4 @@
-import React from 'react'
+import { useForm } from '@formspree/react'
 
 const FORMSPREE_URL = "https://formspree.io/f/mdavzaoj";
 
