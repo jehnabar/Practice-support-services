@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 const SERVICES = [
   // Async / No Phone
@@ -71,7 +71,30 @@ export default function App() {
   const selectedServiceObjs = SERVICES.filter(s => selectedServices.includes(s.id));
   const suggestedTotal = selectedServiceObjs.reduce((sum, s) => sum + s.suggested, 0);
 
-  const handleSubmit = () => setSubmitted(true);
+  const handleSubmit = async () => {
+    const formData = {
+      name,
+      email,
+      practiceName,
+      budget,
+      notes,
+      selectedPackage: selectedPackage ? PACKAGES.find(p => p.id === selectedPackage)?.name : "None selected",
+      selectedServices: selectedServiceObjs.map(s => s.name).join(", ") || "None selected",
+      availability: availability.join(", ") || "Not specified",
+    };
+
+    try {
+      await fetch("https://formspree.io/f/mdavzaoj", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(formData),
+      });
+    } catch (err) {
+      console.error("Form submission error:", err);
+    }
+
+    setSubmitted(true);
+  };
 
   if (submitted) {
     return (
